@@ -74,10 +74,10 @@ const Login = () => {
                     </Typography>
                     <Box component='form' noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
                         <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }} color='error'>
-                            Sign In
+                            Sign In with Google
                         </Button>
                         <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }} color='error'>
-                            Sign In
+                            Sign In with GitHub
                         </Button>
                         <Copyright sx={{ mt: 5 }} />
                     </Box>

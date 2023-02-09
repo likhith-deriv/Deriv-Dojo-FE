@@ -4,7 +4,7 @@ import { Link, Route, Routes } from 'react-router-dom';
 import Dashboard from './pages/dashboard';
 import FirebaseTest from './components/firebase-test';
 import Login from './pages/login';
-import UpdateProfile from './pages/update-profile';
+import Profile from './pages/profile';
 
 function App() {
     return (
@@ -15,7 +15,7 @@ function App() {
                         <Link to='/'>Dashboard</Link>
                     </li>
                     <li>
-                        <Link to='/update-profile'>UpdateProfile</Link>
+                        <Link to='/profile'>Profile</Link>
                     </li>
                     <li>
                         <Link to='/firebase-test'>FirebaseTest</Link>
@@ -28,7 +28,7 @@ function App() {
             </nav>
             <Routes>
                 <Route path='/login' element={<Login />} />
-                <Route path='/update-profile' element={<UpdateProfile />} />
+                <Route path='/profile' element={<Profile />} />
                 <Route exact path='/' element={<Dashboard />} />
                 <Route path='/firebase-test' element={<FirebaseTest />} />
             </Routes>

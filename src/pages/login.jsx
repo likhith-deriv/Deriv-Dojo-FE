@@ -8,6 +8,7 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import deriv_background from '../assets/images/deriv-background.png';
+import { signInWithGoogle, signInWithGithub } from '../firebase-config';
 
 const Copyright = props => (
     <Typography variant='body2' color='text.secondary' align='center' {...props}>
@@ -20,15 +21,19 @@ const Copyright = props => (
     </Typography>
 );
 
-const Login = () => {
-    const handleSubmit = event => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
+const Login = props => {
+    const handleLoginWithGoogle = event => {
         // eslint-disable-next-line
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        signInWithGoogle(props.setIsLoading);
+        // eslint-disable-next-line
+        props.setIsAuthenticated(true);
+    };
+
+    const handleLoginWithGithub = event => {
+        // eslint-disable-next-line
+        signInWithGithub(props.setIsLoading);
+        // eslint-disable-next-line
+        props.setIsAuthenticated(true);
     };
 
     return (
@@ -72,11 +77,23 @@ const Login = () => {
                     <Typography component='h1' variant='h5'>
                         Sign in with
                     </Typography>
-                    <Box component='form' noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                        <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }} color='error'>
+                    <Box sx={{ mt: 1 }}>
+                        <Button
+                            onClick={handleLoginWithGoogle}
+                            fullWidth
+                            variant='contained'
+                            sx={{ mt: 3, mb: 2 }}
+                            color='error'
+                        >
                             Sign In with Google
                         </Button>
-                        <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }} color='error'>
+                        <Button
+                            onClick={handleLoginWithGithub}
+                            fullWidth
+                            variant='contained'
+                            sx={{ mt: 3, mb: 2 }}
+                            color='error'
+                        >
                             Sign In with GitHub
                         </Button>
                         <Copyright sx={{ mt: 5 }} />

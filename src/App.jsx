@@ -5,9 +5,29 @@ import Dashboard from './pages/dashboard';
 import FirebaseTest from './components/firebase-test';
 import Login from './pages/login';
 import Profile from './pages/profile';
+import CircularLoader from './components/circular-loader';
 
 function App() {
-    return (
+    const [is_authenticated, setIsAuthenticated] = React.useState(false);
+    const [is_loading, setIsLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        const name = localStorage.getItem('name');
+        if (name) {
+            setIsAuthenticated(true);
+        }
+        setIsLoading(false);
+    }, []);
+
+    if (is_loading) {
+        return (
+            <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <CircularLoader />
+            </div>
+        );
+    }
+
+    return is_authenticated ? (
         <div>
             <nav>
                 <ul style={{ display: 'flex', gap: '20px' }}>
@@ -20,19 +40,16 @@ function App() {
                     <li>
                         <Link to='/firebase-test'>FirebaseTest</Link>
                     </li>
-                    {/* next link should be deleted after implementation the logic*/}
-                    <li>
-                        <Link to='/login'>Login</Link>
-                    </li>
                 </ul>
             </nav>
             <Routes>
-                <Route path='/login' element={<Login />} />
-                <Route path='/profile' element={<Profile />} />
                 <Route exact path='/' element={<Dashboard />} />
+                <Route path='/profile' element={<Profile setIsAuthenticated={setIsAuthenticated} />} />
                 <Route path='/firebase-test' element={<FirebaseTest />} />
             </Routes>
         </div>
+    ) : (
+        <Login setIsAuthenticated={setIsAuthenticated} setIsLoading={setIsLoading} />
     );
 }
 

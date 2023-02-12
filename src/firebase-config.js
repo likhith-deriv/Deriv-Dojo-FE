@@ -23,9 +23,6 @@ export const signInWithGoogle = setIsLoading => {
     setIsLoading(true);
     signInWithPopup(auth, google_provider)
         .then(result => {
-            // eslint-disable-next-line
-            console.log(result);
-
             const name = result.user.displayName;
             const email = result.user.email;
             const profile_img = result.user.photoURL;

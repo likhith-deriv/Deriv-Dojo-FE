@@ -32,7 +32,6 @@ export const signInWithGoogle = setIsLoading => {
             localStorage.setItem('profile_img', profile_img);
         })
         .catch(error => {
-            // [TODO:] Remove the console and handle the error
             // eslint-disable-next-line
             console.log(error);
         })

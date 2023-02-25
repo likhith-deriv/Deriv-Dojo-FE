@@ -8,7 +8,7 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import deriv_background from '../assets/images/deriv-background.png';
-import { signInWithProvider, handleLoginWithGoogle } from '../firebase-config';
+import { signInWithProvider } from '../firebase-config';
 
 const Copyright = props => (
     <Typography variant='body2' color='text.secondary' align='center' {...props}>
@@ -22,20 +22,6 @@ const Copyright = props => (
 );
 
 const Login = props => {
-    const handleLoginWithGoogle = event => {
-        // eslint-disable-next-line
-        signInWithGoogle(props.setIsLoading);
-        // eslint-disable-next-line
-        props.setIsAuthenticated(true);
-    };
-
-    // const handleLoginWithGithub = event => {
-    //     // eslint-disable-next-line
-    //     signInWithGithub(props.setIsLoading);
-    //     // eslint-disable-next-line
-    //     props.setIsAuthenticated(true);
-    // };
-
     const handleSignIn = provider => {
         signInWithProvider(provider, props.setIsLoading);
         props.setIsAuthenticated(true);

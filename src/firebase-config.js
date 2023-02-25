@@ -1,6 +1,14 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from '@firebase/firestore';
-import { getAuth, GithubAuthProvider, GoogleAuthProvider, signInWithPopup } from '@firebase/auth';
+import {
+    getAuth,
+    GithubAuthProvider,
+    GoogleAuthProvider,
+    signInWithPopup,
+    fetchSignInMethodsForEmail,
+} from '@firebase/auth';
+import { error_code } from 'constants/error-codes';
+import { setUserInfo } from 'utils/helper';
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -19,47 +27,43 @@ export const auth = getAuth(app);
 const google_provider = new GoogleAuthProvider();
 const github_provider = new GithubAuthProvider();
 
-export const signInWithGoogle = setIsLoading => {
-    setIsLoading(true);
-    signInWithPopup(auth, google_provider)
-        .then(result => {
-            const name = result.user.displayName;
-            const email = result.user.email;
-            const profile_img = result.user.photoURL;
+const supported_signin_methods = [GoogleAuthProvider.PROVIDER_ID, GithubAuthProvider.PROVIDER_ID];
 
-            localStorage.setItem('name', name);
-            localStorage.setItem('email', email);
-            localStorage.setItem('profile_img', profile_img);
-        })
-        .catch(error => {
-            // eslint-disable-next-line
-            console.log(error);
-        })
-        .finally(() => {
-            setIsLoading(false);
-        });
+const getProvider = provider => {
+    switch (provider) {
+        case 'google.com':
+            return google_provider;
+        case 'github.com':
+            return github_provider;
+        default:
+            throw new Error({
+                message: `No provider implemented for ${provider}`,
+                code: error_code.NO_PROVIDER_IMPLEMENTED,
+            });
+    }
 };
 
-export const signInWithGithub = setIsLoading => {
+export const signInWithProvider = async (provider, setIsLoading) => {
     setIsLoading(true);
-    signInWithPopup(auth, github_provider)
-        .then(result => {
-            // eslint-disable-next-line
-            console.log(result);
-
-            const name = result.user.displayName;
-            const email = result.user.email;
-            const profile_img = result.user.photoURL;
-
-            localStorage.setItem('name', name);
-            localStorage.setItem('email', email);
-            localStorage.setItem('profile_img', profile_img);
-        })
-        .catch(error => {
-            // eslint-disable-next-line
-            console.log(error);
-        })
-        .finally(() => {
-            setIsLoading(false);
-        });
+    try {
+        const selected_provider = getProvider(provider);
+        const result = await signInWithPopup(auth, selected_provider);
+        setUserInfo(result.user);
+    } catch (error) {
+        if (error.code === error_code.DIFFERENT_CREDENTIALS) {
+            const providers = await fetchSignInMethodsForEmail(auth, error.customData.email);
+            const firstPopupProviderMethod = providers.find(p => supported_signin_methods.includes(p));
+            if (firstPopupProviderMethod) {
+                await signInWithProvider(firstPopupProviderMethod, setIsLoading);
+            }
+        } else if (error.code === error_code.POPUP_BLOCKED) {
+            // eslint-disable-next-line no-console
+            console.log('Popup blocked by browser');
+        } else {
+            // eslint-disable-next-line no-console
+            console.log('error: ', { ...error });
+        }
+    } finally {
+        setIsLoading(false);
+    }
 };

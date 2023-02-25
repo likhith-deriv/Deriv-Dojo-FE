@@ -8,7 +8,7 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import deriv_background from '../assets/images/deriv-background.png';
-import { signInWithGoogle, signInWithGithub } from '../firebase-config';
+import { signInWithProvider, handleLoginWithGoogle } from '../firebase-config';
 
 const Copyright = props => (
     <Typography variant='body2' color='text.secondary' align='center' {...props}>
@@ -29,10 +29,15 @@ const Login = props => {
         props.setIsAuthenticated(true);
     };
 
-    const handleLoginWithGithub = event => {
-        // eslint-disable-next-line
-        signInWithGithub(props.setIsLoading);
-        // eslint-disable-next-line
+    // const handleLoginWithGithub = event => {
+    //     // eslint-disable-next-line
+    //     signInWithGithub(props.setIsLoading);
+    //     // eslint-disable-next-line
+    //     props.setIsAuthenticated(true);
+    // };
+
+    const handleSignIn = provider => {
+        signInWithProvider(provider, props.setIsLoading);
         props.setIsAuthenticated(true);
     };
 
@@ -79,7 +84,7 @@ const Login = props => {
                     </Typography>
                     <Box sx={{ mt: 1 }}>
                         <Button
-                            onClick={handleLoginWithGoogle}
+                            onClick={() => handleSignIn('google.com')}
                             fullWidth
                             variant='contained'
                             sx={{ mt: 3, mb: 2 }}
@@ -88,7 +93,7 @@ const Login = props => {
                             Sign In with Google
                         </Button>
                         <Button
-                            onClick={handleLoginWithGithub}
+                            onClick={() => handleSignIn('github.com')}
                             fullWidth
                             variant='contained'
                             sx={{ mt: 3, mb: 2 }}

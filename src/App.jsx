@@ -1,11 +1,11 @@
 import React from 'react';
 import './app.css';
 import { Link, Route, Routes } from 'react-router-dom';
-import Dashboard from './pages/dashboard';
-import FirebaseTest from './components/firebase-test';
-import Login from './pages/login';
-import Profile from './pages/profile';
-import CircularLoader from './components/circular-loader';
+import Dashboard from 'pages/dashboard';
+import FirebaseTest from 'components/firebase-test';
+import Login from 'pages/login';
+import Profile from 'pages/profile';
+import CircularLoader from 'components/circular-loader';
 
 function App() {
     const [is_authenticated, setIsAuthenticated] = React.useState(false);

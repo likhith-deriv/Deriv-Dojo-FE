@@ -32,7 +32,8 @@
         "react/no-unknown-property": 1,
         "require-jsdoc": 0,
         "react/react-in-jsx-scope": "off",
-        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "react/prop-types": "off"
     },
     "settings": {
         "react": {

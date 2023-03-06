@@ -1,13 +1,16 @@
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from '@firebase/firestore';
 import {
-    getAuth,
     GithubAuthProvider,
     GoogleAuthProvider,
-    signInWithPopup,
     fetchSignInMethodsForEmail,
+    getAuth,
+    onAuthStateChanged,
+    signInWithPopup,
 } from '@firebase/auth';
+
 import { error_code } from 'constants/error-codes';
+import { getFirestore } from '@firebase/firestore';
+/* eslint-disable no-console */
+import { initializeApp } from 'firebase/app';
 import { setUserInfo } from 'utils/helper';
 
 const firebaseConfig = {
@@ -67,3 +70,14 @@ export const signInWithProvider = async (provider, setIsLoading) => {
         setIsLoading(false);
     }
 };
+
+export const isAuthStateChanged = () =>
+    new Promise((resolve, reject) => {
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                resolve(user);
+            } else {
+                reject(new Error({ message: 'No user is signed in', code: error_code.AUTH_CHANGED }));
+            }
+        });
+    });

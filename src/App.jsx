@@ -1,23 +1,42 @@
-import React from 'react';
 import './app.css';
+
 import { Link, Route, Routes } from 'react-router-dom';
+import { StoreProvider, useStores } from 'hooks';
+
+import CircularLoader from 'components/circular-loader';
 import Dashboard from 'pages/dashboard';
 import FirebaseTest from 'components/firebase-test';
 import Login from 'pages/login';
 import Profile from 'pages/profile';
-import CircularLoader from 'components/circular-loader';
+/* eslint-disable no-console */
+import React from 'react';
+import { isAuthStateChanged } from './firebase-config';
 
 function App() {
     const [is_authenticated, setIsAuthenticated] = React.useState(false);
     const [is_loading, setIsLoading] = React.useState(true);
 
+    const { common_store } = useStores();
+
     React.useEffect(() => {
-        const name = localStorage.getItem('name');
-        if (name) {
+        const status = getAuthStatus();
+        if (status?.accessToken) {
+            common_store.setAuthStatus(status.accessToken);
             setIsAuthenticated(true);
         }
         setIsLoading(false);
     }, []);
+
+    const getAuthStatus = async () => {
+        console.log('Get auth called');
+        try {
+            const data = await isAuthStateChanged();
+            return data;
+        } catch (err) {
+            console.log(err);
+            return null;
+        }
+    };
 
     if (is_loading) {
         return (
@@ -28,7 +47,7 @@ function App() {
     }
 
     return is_authenticated ? (
-        <div>
+        <StoreProvider>
             <nav>
                 <ul style={{ display: 'flex', gap: '20px' }}>
                     <li>
@@ -47,7 +66,7 @@ function App() {
                 <Route path='/profile' element={<Profile setIsAuthenticated={setIsAuthenticated} />} />
                 <Route path='/firebase-test' element={<FirebaseTest />} />
             </Routes>
-        </div>
+        </StoreProvider>
     ) : (
         <Login setIsAuthenticated={setIsAuthenticated} setIsLoading={setIsLoading} />
     );

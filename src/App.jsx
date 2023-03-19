@@ -8,7 +8,6 @@ import Dashboard from 'pages/dashboard';
 import FirebaseTest from 'components/firebase-test';
 import Login from 'pages/login';
 import Profile from 'pages/profile';
-/* eslint-disable no-console */
 import React from 'react';
 import { isAuthStateChanged } from './firebase-config';
 
@@ -19,24 +18,23 @@ function App() {
     const { common_store } = useStores();
 
     React.useEffect(() => {
-        const status = getAuthStatus();
-        if (status?.accessToken) {
-            common_store.setAuthStatus(status.accessToken);
-            setIsAuthenticated(true);
-        }
-        setIsLoading(false);
-    }, []);
+        const getAuthStatus = async () => {
+            try {
+                const data = await isAuthStateChanged();
+                if (data?.accessToken) {
+                    common_store.setAuthToken(data.accessToken);
+                    setIsAuthenticated(true);
+                }
+            } catch (err) {
+                // eslint-disable-next-line no-console
+                console.log(err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-    const getAuthStatus = async () => {
-        console.log('Get auth called');
-        try {
-            const data = await isAuthStateChanged();
-            return data;
-        } catch (err) {
-            console.log(err);
-            return null;
-        }
-    };
+        getAuthStatus();
+    }, []);
 
     if (is_loading) {
         return (

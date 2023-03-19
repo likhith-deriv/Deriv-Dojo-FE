@@ -5,8 +5,8 @@ import Base from './base-store';
 export default class CommonStore extends Base {
     auth_token = null;
 
-    constructor() {
-        super();
+    constructor(root_store) {
+        super({ root_store });
         makeObservable(this, {
             auth_token: observable,
             setAuthToken: action,
